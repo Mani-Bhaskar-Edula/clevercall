@@ -1,28 +1,29 @@
+require('dotenv').config(); 
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const twilio = require('twilio');
 const AWS = require('aws-sdk');
 const cors = require('cors');
-require('dotenv').config(); // Add this line to load .env variables
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Twilio credentials from environment variables
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
+// Twilio credentials
+const accountSid = process.env.TWILIO_ACCOUNT_SID; 
+const authToken = process.env.TWILIO_AUTH_TOKEN; 
 const client = new twilio(accountSid, authToken);
 
 // AWS S3 configuration
 AWS.config.update({
-  region: 'ap-south-1', // Replace with your region
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION, 
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID, 
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY, 
 });
 
 const s3 = new AWS.S3();
-const bucketName = 'message-xml'; // Replace with your S3 bucket name
+const bucketName = process.env.S3_BUCKET_NAME; 
 
 app.post('/send-call', (req, res) => {
   const { message, numbers } = req.body;
